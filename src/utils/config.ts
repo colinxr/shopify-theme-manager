@@ -1,5 +1,5 @@
 import { homedir } from 'os';
-import { join } from 'path';
+import { join, resolve } from 'path';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 
 interface StoreConfig {
@@ -10,6 +10,7 @@ interface StoreConfig {
 
 interface Config {
   stores: StoreConfig[];
+  rootDirectory?: string;
 }
 
 export class ConfigManager {
@@ -55,5 +56,14 @@ export class ConfigManager {
 
   listStores(): StoreConfig[] {
     return this.config.stores;
+  }
+
+  setRootDirectory(directory: string): void {
+    this.config.rootDirectory = resolve(directory);
+    this.saveConfig(this.config);
+  }
+
+  getRootDirectory(): string | undefined {
+    return this.config.rootDirectory;
   }
 } 

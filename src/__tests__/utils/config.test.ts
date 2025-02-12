@@ -127,4 +127,74 @@ describe('ConfigManager', () => {
       expect(stores).toEqual(mockStores);
     });
   });
+
+  describe('root directory', () => {
+    it('should set root directory in config', () => {
+      // Setup
+      const config = new ConfigManager();
+      const rootDir = '/path/to/root';
+      const writeSpy = jest.spyOn(ConfigManager.prototype as any, 'saveConfig');
+
+      // Execute
+      config.setRootDirectory(rootDir);
+
+      // Assert
+      expect(writeSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          rootDirectory: rootDir,
+          stores: expect.any(Array)
+        })
+      );
+    });
+
+    it('should normalize the root directory path', () => {
+      // Setup
+      const config = new ConfigManager();
+      const writeSpy = jest.spyOn(ConfigManager.prototype as any, 'saveConfig');
+
+      // Execute
+      config.setRootDirectory('./relative/path');
+
+      // Assert
+      expect(writeSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          rootDirectory: expect.stringMatching(/^\/.*\/relative\/path$/),
+          stores: expect.any(Array)
+        })
+      );
+    });
+
+    it('should get root directory from config', () => {
+      // Setup
+      const rootDir = '/path/to/root';
+      (readFileSync as jest.Mock).mockReturnValue(JSON.stringify({
+        stores: [],
+        rootDirectory: rootDir
+      }));
+      
+      const config = new ConfigManager();
+
+      // Execute
+      const result = config.getRootDirectory();
+
+      // Assert
+      expect(result).toBe(rootDir);
+    });
+
+    it('should return undefined if no root directory is set', () => {
+      // Setup
+      (readFileSync as jest.Mock).mockReturnValue(JSON.stringify({
+        stores: []
+      }));
+      
+      const config = new ConfigManager();
+
+      // Execute
+      const result = config.getRootDirectory();
+
+      // Assert
+      expect(result).toBeUndefined();
+    });
+  });
+
 }); 

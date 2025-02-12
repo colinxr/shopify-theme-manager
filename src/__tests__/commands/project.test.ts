@@ -5,6 +5,7 @@ import { execSync } from 'child_process';
 import * as inquirer from 'inquirer';
 import { spawn } from 'child_process';
 import { checkShopifyCLI } from '../../utils/cli-check';
+import { join } from 'path';
 
 jest.mock('../../utils/config');
 jest.mock('child_process', () => ({
@@ -248,6 +249,55 @@ describe('Project Commands', () => {
 
       // Assert
       expect(mockConfigManager.setWorkspace).toHaveBeenCalledWith(process.cwd());
+    });
+  });
+
+  describe('cd command', () => {
+    it('should execute stm-cd script with store alias', async () => {
+      // Setup
+      const spawnSpy = spawn as jest.Mock;
+      spawnSpy.mockReturnValue({
+        on: jest.fn()
+      });
+
+      // Execute
+      await program.parseAsync(['node', 'test', 'cd', 'test-alias']);
+
+      // Assert
+      expect(spawnSpy).toHaveBeenCalledWith(
+        'stm-cd',
+        ['test-alias'],
+        expect.objectContaining({
+          stdio: 'inherit',
+          shell: true
+        })
+      );
+    });
+
+    it('should handle script execution errors', async () => {
+      // Setup
+      const spawnSpy = spawn as jest.Mock;
+      const mockProcess = {
+        on: jest.fn()
+      };
+      spawnSpy.mockReturnValue(mockProcess);
+      
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+      const exitSpy = jest.spyOn(process, 'exit').mockImplementation();
+
+      // Execute
+      await program.parseAsync(['node', 'test', 'cd', 'test-alias']);
+
+      // Simulate error event
+      const errorCallback = mockProcess.on.mock.calls.find(call => call[0] === 'error')[1];
+      errorCallback(new Error('spawn error'));
+
+      // Assert
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Failed to execute stm-cd:',
+        expect.any(Error)
+      );
+      expect(exitSpy).toHaveBeenCalledWith(1);
     });
   });
 }); 

@@ -4,10 +4,12 @@
   "description": "CLI tool to manage Shopify themes",
   "main": "dist/index.js",
   "bin": {
-    "stm": "./dist/index.js"
+    "stm": "./dist/index.js",
+    "stm-cd": "./bin/stm-cd"
   },
   "files": [
-    "README.md"
+    "README.md",
+    "bin/stm-cd"
   ],
   "keywords": [
     "shopify",

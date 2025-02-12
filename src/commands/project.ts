@@ -2,6 +2,8 @@ import { Command } from 'commander';
 import { ConfigManager } from '../utils/config';
 import inquirer from 'inquirer';
 import { ensureShopifyCLI } from '../utils/cli-check';
+import { join } from 'path';
+import { spawn } from 'child_process';
 
 export function setupProjectCommands(program: Command): void {
   const config = new ConfigManager();
@@ -108,5 +110,22 @@ export function setupProjectCommands(program: Command): void {
     .action(async (directory = process.cwd()) => {
       config.setWorkspace(directory);
       console.log(`Workspace set to: ${config.getWorkspace()}`);
+    });
+
+  program
+    .command('cd')
+    .description('Change to store directory')
+    .argument('<alias>', 'Store alias')
+    .action((alias) => {
+      // Execute the stm-cd script
+      const script = spawn('stm-cd', [alias], {
+        stdio: 'inherit',
+        shell: true
+      });
+
+      script.on('error', (error) => {
+        console.error('Failed to execute stm-cd:', error);
+        process.exit(1);
+      });
     });
 } 

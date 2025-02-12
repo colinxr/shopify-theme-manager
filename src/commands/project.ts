@@ -30,7 +30,7 @@ export function setupProjectCommands(program: Command): void {
         },
         {
           type: 'input',
-          name: 'projectDirectory',
+          name: 'projectDir',
           message: 'Enter the project directory path:',
           default: process.cwd(),
           validate: (input: string) => {
@@ -42,7 +42,7 @@ export function setupProjectCommands(program: Command): void {
         }
       ]);
 
-      config.addStore(answers.storeId, answers.alias, answers.projectDirectory);
+      config.addStore(answers.storeId, answers.alias, answers.projectDir);
       console.log(`Store ${answers.alias} added successfully`);
     });
 

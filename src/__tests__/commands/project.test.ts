@@ -46,7 +46,7 @@ describe('Project Commands', () => {
       const mockAnswers = {
         storeId: 'test-store',
         alias: 'test-alias',
-        projectDirectory: '/path/to/project'
+        projectDir: 'test-store-dir'
       };
       
       mockPrompt.mockResolvedValue(mockAnswers);
@@ -69,32 +69,36 @@ describe('Project Commands', () => {
         }),
         expect.objectContaining({
           type: 'input',
-          name: 'projectDirectory',
+          name: 'projectDir',
           message: 'Enter the project directory path:',
-          default: process.cwd()
         })
       ]);
       
       expect(mockConfigManager.addStore).toHaveBeenCalledWith(
         mockAnswers.storeId,
         mockAnswers.alias,
-        mockAnswers.projectDirectory
+        mockAnswers.projectDir
       );
     });
 
     it('should use store ID as alias when no alias is provided', async () => {
       // Setup
       const storeId = 'test-store';
+      const alias = 'test-alias';
+      const projectDir = 'test-store-dir';
       mockPrompt.mockResolvedValue({
-        storeId,
-        alias: storeId // Default value when user doesn't input an alias
+        storeId, alias, projectDir
       });
 
       // Execute
       await program.parseAsync(['node', 'test', 'add']);
 
       // Assert
-      expect(mockConfigManager.addStore).toHaveBeenCalledWith(storeId, storeId);
+      expect(mockConfigManager.addStore).toHaveBeenCalledWith(
+        storeId, 
+        alias,
+        projectDir
+      );
     });
 
     it('should validate required store ID', async () => {
@@ -106,6 +110,7 @@ describe('Project Commands', () => {
           message: 'Enter the Shopify store ID:',
           validate: expect.any(Function)
         },
+        expect.any(Object),
         expect.any(Object)
       ];
 
@@ -122,7 +127,8 @@ describe('Project Commands', () => {
         // Return mock answers after validation
         return {
           storeId: 'valid-store',
-          alias: 'test-alias'
+          alias: 'test-alias',
+          projectDir: 'test-store-dir'
         };
       });
 
@@ -137,7 +143,11 @@ describe('Project Commands', () => {
   describe('list command', () => {
     it('should execute shopify CLI command with correct store ID', async () => {
       // Setup
-      mockConfigManager.getStore.mockReturnValue({ storeId: 'test-store', alias: 'test-alias' });
+      mockConfigManager.getStore.mockReturnValue({ 
+        storeId: 'test-store', 
+        alias: 'test-alias',
+        projectDir: 'test-store-dir'
+      });
       (execSync as jest.Mock).mockReturnValue(Buffer.from('themes list'));
 
       // Execute
@@ -152,7 +162,11 @@ describe('Project Commands', () => {
 
     it('should include name filter when provided', async () => {
       // Setup
-      mockConfigManager.getStore.mockReturnValue({ storeId: 'test-store', alias: 'test-alias' });
+      mockConfigManager.getStore.mockReturnValue({ 
+        storeId: 'test-store', 
+        alias: 'test-alias',
+        projectDir: 'test-store-dir'
+      });
       (execSync as jest.Mock).mockReturnValue(Buffer.from('themes list'));
 
       // Execute
@@ -184,7 +198,11 @@ describe('Project Commands', () => {
   describe('dev command', () => {
     it('should start theme development server with correct parameters', async () => {
       // Setup
-      mockConfigManager.getStore.mockReturnValue({ storeId: 'test-store', alias: 'test-alias' });
+      mockConfigManager.getStore.mockReturnValue({ 
+        storeId: 'test-store', 
+        alias: 'test-alias',
+        projectDir: 'test-store-dir'
+      });
       (spawn as jest.Mock).mockReturnValue({
         on: jest.fn()
       });

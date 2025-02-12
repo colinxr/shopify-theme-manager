@@ -26,11 +26,23 @@ export function setupProjectCommands(program: Command): void {
           type: 'input',
           name: 'alias',
           message: 'Enter an alias for the store (optional):',
-          default: (answers: { storeId: string }) => answers.storeId // Use store ID as default alias
+          default: (answers: { storeId: string }) => answers.storeId
+        },
+        {
+          type: 'input',
+          name: 'projectDirectory',
+          message: 'Enter the project directory path:',
+          default: process.cwd(),
+          validate: (input: string) => {
+            if (!input.trim()) {
+              return 'Project directory is required';
+            }
+            return true;
+          }
         }
       ]);
 
-      config.addStore(answers.storeId, answers.alias);
+      config.addStore(answers.storeId, answers.alias, answers.projectDirectory);
       console.log(`Store ${answers.alias} added successfully`);
     });
 

@@ -41,11 +41,12 @@ describe('Project Commands', () => {
   });
 
   describe('add command', () => {
-    it('should prompt for store details and add store configuration', async () => {
+    it('should prompt for store details and project directory', async () => {
       // Setup
       const mockAnswers = {
         storeId: 'test-store',
-        alias: 'test-alias'
+        alias: 'test-alias',
+        projectDirectory: '/path/to/project'
       };
       
       mockPrompt.mockResolvedValue(mockAnswers);
@@ -65,12 +66,19 @@ describe('Project Commands', () => {
           type: 'input',
           name: 'alias',
           message: 'Enter an alias for the store (optional):'
+        }),
+        expect.objectContaining({
+          type: 'input',
+          name: 'projectDirectory',
+          message: 'Enter the project directory path:',
+          default: process.cwd()
         })
       ]);
       
       expect(mockConfigManager.addStore).toHaveBeenCalledWith(
         mockAnswers.storeId,
-        mockAnswers.alias
+        mockAnswers.alias,
+        mockAnswers.projectDirectory
       );
     });
 

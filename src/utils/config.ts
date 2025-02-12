@@ -5,6 +5,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 interface StoreConfig {
   storeId: string;
   alias: string;
+  projectDirectory: string;
 }
 
 interface Config {
@@ -42,8 +43,8 @@ export class ConfigManager {
     writeFileSync(this.configPath, JSON.stringify(config, null, 2));
   }
 
-  addStore(storeId: string, alias: string): void {
-    const store = { storeId, alias };
+  addStore(storeId: string, alias: string, projectDirectory: string): void {
+    const store = { storeId, alias, projectDirectory };
     this.config.stores.push(store);
     this.saveConfig(this.config);
   }

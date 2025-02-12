@@ -54,9 +54,7 @@ export function setupProjectCommands(program: Command): void {
     .argument('<alias>', 'Store alias')
     .option('-n, --name <name>', 'Filter by theme name')
     .action((alias, options) => {
-      ensureShopifyCLI();
       const store = config.getStore(alias);
-      console.log(store);
       
       if (!store) {
         console.error(`Store with alias "${alias}" not found`);
@@ -83,8 +81,6 @@ export function setupProjectCommands(program: Command): void {
     .description('Start theme development server')
     .argument('<themeId>', 'Theme ID to develop against')
     .action(async (themeId) => {
-      ensureShopifyCLI();
-
       const command = ['shopify', 'theme', 'dev', '--theme', themeId];
       
       // Execute command using child_process

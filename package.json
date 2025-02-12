@@ -6,16 +6,34 @@
   "bin": {
     "stm": "./dist/index.js"
   },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "keywords": [
+    "shopify",
+    "theme",
+    "cli",
+    "development"
+  ],
   "scripts": {
     "build": "tsc",
     "start": "ts-node src/index.ts",
     "prepare": "npm run build",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "prepublishOnly": "npm test && npm run build"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/shopify-theme-manager.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/shopify-theme-manager/issues"
+  },
+  "homepage": "https://github.com/yourusername/shopify-theme-manager#readme",
   "dependencies": {
     "commander": "^13.1.0",
     "inquirer": "^8.2.6",

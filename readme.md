@@ -27,13 +27,18 @@ npm install -g shopify-theme-manager
 To update to the latest version:
 
 ```bash
+# Option 1: Update
 npm update -g shopify-theme-manager
+
+# Option 2: Uninstall and reinstall (recommended)
+npm uninstall -g shopify-theme-manager
+npm install -g shopify-theme-manager
 ```
 
-Or install a specific version:
+You can verify the installed version with:
 
 ```bash
-npm install -g shopify-theme-manager@1.0.2
+stm -V
 ```
 
 ## Commands

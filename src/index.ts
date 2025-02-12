@@ -8,7 +8,7 @@ const program = new Command();
 program
   .name('shopify-theme-manager')
   .description('CLI tool to manage Shopify themes')
-  .version('1.0.0');
+  .version(require('../package.json').version);
 
 setupProjectCommands(program);
 

@@ -5,6 +5,7 @@ import { execSync } from 'child_process';
 import * as inquirer from 'inquirer';
 import { spawn } from 'child_process';
 import { checkShopifyCLI } from '../../utils/cli-check';
+import { join } from 'path';
 
 jest.mock('../../utils/config');
 jest.mock('child_process', () => ({
@@ -32,6 +33,8 @@ describe('Project Commands', () => {
       addStore: jest.fn(),
       getStore: jest.fn(),
       listStores: jest.fn(),
+      setWorkspace: jest.fn(),
+      getWorkspace: jest.fn()
     } as any;
     
     (ConfigManager as jest.Mock).mockImplementation(() => mockConfigManager);
@@ -41,11 +44,12 @@ describe('Project Commands', () => {
   });
 
   describe('add command', () => {
-    it('should prompt for store details and add store configuration', async () => {
+    it('should prompt for store details and project directory', async () => {
       // Setup
       const mockAnswers = {
         storeId: 'test-store',
-        alias: 'test-alias'
+        alias: 'test-alias',
+        projectDir: 'test-store-dir'
       };
       
       mockPrompt.mockResolvedValue(mockAnswers);
@@ -65,28 +69,39 @@ describe('Project Commands', () => {
           type: 'input',
           name: 'alias',
           message: 'Enter an alias for the store (optional):'
+        }),
+        expect.objectContaining({
+          type: 'input',
+          name: 'projectDir',
+          message: 'Enter the project directory path:',
         })
       ]);
       
       expect(mockConfigManager.addStore).toHaveBeenCalledWith(
         mockAnswers.storeId,
-        mockAnswers.alias
+        mockAnswers.alias,
+        mockAnswers.projectDir
       );
     });
 
     it('should use store ID as alias when no alias is provided', async () => {
       // Setup
       const storeId = 'test-store';
+      const alias = 'test-alias';
+      const projectDir = 'test-store-dir';
       mockPrompt.mockResolvedValue({
-        storeId,
-        alias: storeId // Default value when user doesn't input an alias
+        storeId, alias, projectDir
       });
 
       // Execute
       await program.parseAsync(['node', 'test', 'add']);
 
       // Assert
-      expect(mockConfigManager.addStore).toHaveBeenCalledWith(storeId, storeId);
+      expect(mockConfigManager.addStore).toHaveBeenCalledWith(
+        storeId, 
+        alias,
+        projectDir
+      );
     });
 
     it('should validate required store ID', async () => {
@@ -98,6 +113,7 @@ describe('Project Commands', () => {
           message: 'Enter the Shopify store ID:',
           validate: expect.any(Function)
         },
+        expect.any(Object),
         expect.any(Object)
       ];
 
@@ -114,7 +130,8 @@ describe('Project Commands', () => {
         // Return mock answers after validation
         return {
           storeId: 'valid-store',
-          alias: 'test-alias'
+          alias: 'test-alias',
+          projectDir: 'test-store-dir'
         };
       });
 
@@ -129,7 +146,11 @@ describe('Project Commands', () => {
   describe('list command', () => {
     it('should execute shopify CLI command with correct store ID', async () => {
       // Setup
-      mockConfigManager.getStore.mockReturnValue({ storeId: 'test-store', alias: 'test-alias' });
+      mockConfigManager.getStore.mockReturnValue({ 
+        storeId: 'test-store', 
+        alias: 'test-alias',
+        projectDir: 'test-store-dir'
+      });
       (execSync as jest.Mock).mockReturnValue(Buffer.from('themes list'));
 
       // Execute
@@ -144,7 +165,11 @@ describe('Project Commands', () => {
 
     it('should include name filter when provided', async () => {
       // Setup
-      mockConfigManager.getStore.mockReturnValue({ storeId: 'test-store', alias: 'test-alias' });
+      mockConfigManager.getStore.mockReturnValue({ 
+        storeId: 'test-store', 
+        alias: 'test-alias',
+        projectDir: 'test-store-dir'
+      });
       (execSync as jest.Mock).mockReturnValue(Buffer.from('themes list'));
 
       // Execute
@@ -176,7 +201,11 @@ describe('Project Commands', () => {
   describe('dev command', () => {
     it('should start theme development server with correct parameters', async () => {
       // Setup
-      mockConfigManager.getStore.mockReturnValue({ storeId: 'test-store', alias: 'test-alias' });
+      mockConfigManager.getStore.mockReturnValue({ 
+        storeId: 'test-store', 
+        alias: 'test-alias',
+        projectDir: 'test-store-dir'
+      });
       (spawn as jest.Mock).mockReturnValue({
         on: jest.fn()
       });
@@ -193,6 +222,82 @@ describe('Project Commands', () => {
           shell: true
         })
       );
+    });
+  });
+
+  describe('set-workspace command', () => {
+    it('should set workspace with provided path', async () => {
+      // Setup
+      const testDir = '/test/path';
+      mockConfigManager.setWorkspace.mockImplementation(() => {});
+      mockConfigManager.getWorkspace.mockReturnValue(testDir);
+
+      // Execute
+      await program.parseAsync(['node', 'test', 'set-workspace', testDir]);
+
+      // Assert
+      expect(mockConfigManager.setWorkspace).toHaveBeenCalledWith(testDir);
+    });
+
+    it('should default to current directory when no path provided', async () => {
+      // Setup
+      mockConfigManager.setWorkspace.mockImplementation(() => {});
+      mockConfigManager.getWorkspace.mockReturnValue(process.cwd());
+
+      // Execute
+      await program.parseAsync(['node', 'test', 'set-workspace']);
+
+      // Assert
+      expect(mockConfigManager.setWorkspace).toHaveBeenCalledWith(process.cwd());
+    });
+  });
+
+  describe('cd command', () => {
+    it('should execute stm-cd script with store alias', async () => {
+      // Setup
+      const spawnSpy = spawn as jest.Mock;
+      spawnSpy.mockReturnValue({
+        on: jest.fn()
+      });
+
+      // Execute
+      await program.parseAsync(['node', 'test', 'cd', 'test-alias']);
+
+      // Assert
+      expect(spawnSpy).toHaveBeenCalledWith(
+        'stm-cd',
+        ['test-alias'],
+        expect.objectContaining({
+          stdio: 'inherit',
+          shell: true
+        })
+      );
+    });
+
+    it('should handle script execution errors', async () => {
+      // Setup
+      const spawnSpy = spawn as jest.Mock;
+      const mockProcess = {
+        on: jest.fn()
+      };
+      spawnSpy.mockReturnValue(mockProcess);
+      
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+      const exitSpy = jest.spyOn(process, 'exit').mockImplementation();
+
+      // Execute
+      await program.parseAsync(['node', 'test', 'cd', 'test-alias']);
+
+      // Simulate error event
+      const errorCallback = mockProcess.on.mock.calls.find(call => call[0] === 'error')[1];
+      errorCallback(new Error('spawn error'));
+
+      // Assert
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Failed to execute stm-cd:',
+        expect.any(Error)
+      );
+      expect(exitSpy).toHaveBeenCalledWith(1);
     });
   });
 }); 

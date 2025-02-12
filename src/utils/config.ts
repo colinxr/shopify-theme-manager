@@ -1,14 +1,16 @@
 import { homedir } from 'os';
-import { join } from 'path';
+import { join, resolve } from 'path';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 
 interface StoreConfig {
   storeId: string;
   alias: string;
+  projectDir: string;
 }
 
 interface Config {
   stores: StoreConfig[];
+  workspace?: string;
 }
 
 export class ConfigManager {
@@ -42,8 +44,8 @@ export class ConfigManager {
     writeFileSync(this.configPath, JSON.stringify(config, null, 2));
   }
 
-  addStore(storeId: string, alias: string): void {
-    const store = { storeId, alias };
+  addStore(storeId: string, alias: string, projectDir: string): void {
+    const store = { storeId, alias, projectDir };
     this.config.stores.push(store);
     this.saveConfig(this.config);
   }
@@ -54,5 +56,14 @@ export class ConfigManager {
 
   listStores(): StoreConfig[] {
     return this.config.stores;
+  }
+
+  setWorkspace(directory: string): void {
+    this.config.workspace = resolve(directory);
+    this.saveConfig(this.config);
+  }
+
+  getWorkspace(): string | undefined {
+    return this.config.workspace;
   }
 } 

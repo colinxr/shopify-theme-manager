@@ -2,6 +2,8 @@ import { Command } from 'commander';
 import { ConfigManager } from '../utils/config';
 import inquirer from 'inquirer';
 import { ensureShopifyCLI } from '../utils/cli-check';
+import { join } from 'path';
+import { spawn } from 'child_process';
 
 export function setupProjectCommands(program: Command): void {
   const config = new ConfigManager();
@@ -26,11 +28,23 @@ export function setupProjectCommands(program: Command): void {
           type: 'input',
           name: 'alias',
           message: 'Enter an alias for the store (optional):',
-          default: (answers: { storeId: string }) => answers.storeId // Use store ID as default alias
+          default: (answers: { storeId: string }) => answers.storeId
+        },
+        {
+          type: 'input',
+          name: 'projectDir',
+          message: 'Enter the project directory path:',
+          default: process.cwd(),
+          validate: (input: string) => {
+            if (!input.trim()) {
+              return 'Project directory is required';
+            }
+            return true;
+          }
         }
       ]);
 
-      config.addStore(answers.storeId, answers.alias);
+      config.addStore(answers.storeId, answers.alias, answers.projectDir);
       console.log(`Store ${answers.alias} added successfully`);
     });
 
@@ -87,5 +101,31 @@ export function setupProjectCommands(program: Command): void {
       } catch (error) {
         console.error('Error executing Shopify CLI command:', error);
       }
+    });
+
+  program
+    .command('set-workspace')
+    .description('Set the workspace directory for all projects')
+    .argument('[directory]', 'Directory path (defaults to current directory)')
+    .action(async (directory = process.cwd()) => {
+      config.setWorkspace(directory);
+      console.log(`Workspace set to: ${config.getWorkspace()}`);
+    });
+
+  program
+    .command('cd')
+    .description('Change to store directory')
+    .argument('<alias>', 'Store alias')
+    .action((alias) => {
+      // Execute the stm-cd script
+      const script = spawn('stm-cd', [alias], {
+        stdio: 'inherit',
+        shell: true
+      });
+
+      script.on('error', (error) => {
+        console.error('Failed to execute stm-cd:', error);
+        process.exit(1);
+      });
     });
 } 

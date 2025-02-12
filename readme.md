@@ -22,12 +22,30 @@ Install the package globally:
   npm install -g shopify-theme-manager
 ```
 
-## Usage
+## Commands
 
-To use the tool, run the following command:
+### Set Workspace (`stm set-workspace`)
+
+Set the workspace directory for all projects. This is the root directory where all store projects are located.
 
 ```bash
-  stm
+# Set to specific directory
+stm set-workspace /path/to/workspace
+
+# Set to current directory
+stm set-workspace
+```
+
+### Add Store (`stm add`)
+
+Add a new Shopify store configuration. The command will prompt for:
+
+- Store ID (required) - Your Shopify store ID (e.g., my-store.myshopify.com)
+- Store alias (optional, defaults to store ID) - A shorthand name for the store
+- Project directory path (required) - The directory containing your theme files
+
+```bash
+stm add
 ```
 
 ### List Themes (`stm list`)
@@ -35,15 +53,23 @@ To use the tool, run the following command:
 List all themes for a specific store.
 
 ```bash
-  stm list <alias>
+stm list <store-alias> [--name <theme-name>]
 ```
 
-### Dev Theme (`stm dev`)
+### Development Server (`stm dev`)
 
-Start theme development server.
+Start theme development server for a specific theme.
 
 ```bash
-  stm dev <themeId>
+stm dev <theme-id>
+```
+
+### Change Directory (`stm cd`)
+
+Change to a store's project directory within the workspace.
+
+```bash
+stm cd store-alias
 ```
 
 ## Configuration
@@ -54,28 +80,48 @@ The tool stores configurations in:
 ~/.config/shopify-theme-manager/config.json
 ```
 
-## Development
+Configuration includes:
 
-To contribute to this project:
+- Workspace directory - Root directory for all projects
+- Store configurations:
+  - Store ID - Shopify store identifier
+  - Alias - Custom name for the store
+  - Project directory - Path to theme files (relative to workspace)
 
-1. Clone the repository
-2. Install dependencies:
+## Example Workflow
+
+1. Set up workspace:
+
    ```bash
-   npm install
-   ```
-3. Run tests:
-   ```bash
-   npm test
-   ```
-4. Start in development mode:
-   ```bash
-   npm start
+   stm set-workspace ~/shopify-projects
    ```
 
-## License
+2. Add a store:
 
-ISC
+   ```bash
+   stm add
+   # > Enter store ID: my-store.myshopify.com
+   # > Enter alias: store1
+   # > Enter project directory: store1-theme
+   ```
 
-## Contributing
+3. Navigate to store directory:
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+   ```bash
+   stm cd store1
+   ```
+
+4. List themes:
+
+   ```bash
+   stm list store1
+   ```
+
+5. Start development:
+   ```bash
+   stm dev <theme-id>
+   ```
+
+```
+
+```

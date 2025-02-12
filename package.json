@@ -9,7 +9,8 @@
   },
   "files": [
     "README.md",
-    "bin/stm-cd"
+    "bin/stm-cd",
+    "dist/**/*"
   ],
   "keywords": [
     "shopify",

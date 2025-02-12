@@ -19,7 +19,21 @@ Before using this tool, ensure you have:
 Install the package globally:
 
 ```bash
-  npm install -g shopify-theme-manager
+npm install -g shopify-theme-manager
+```
+
+## Updating
+
+To update to the latest version:
+
+```bash
+npm update -g shopify-theme-manager
+```
+
+Or install a specific version:
+
+```bash
+npm install -g shopify-theme-manager@1.0.2
 ```
 
 ## Commands

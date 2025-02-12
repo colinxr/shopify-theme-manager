@@ -7,7 +7,6 @@
     "stm": "./dist/index.js"
   },
   "files": [
-    "dist",
     "README.md"
   ],
   "keywords": [
@@ -28,12 +27,12 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourusername/shopify-theme-manager.git"
+    "url": "git+https://github.com/colinxr/shopify-theme-manager.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/shopify-theme-manager/issues"
+    "url": "https://github.com/colinxr/shopify-theme-manager/issues"
   },
-  "homepage": "https://github.com/yourusername/shopify-theme-manager#readme",
+  "homepage": "https://github.com/colinxr/shopify-theme-manager#readme",
   "dependencies": {
     "commander": "^13.1.0",
     "inquirer": "^8.2.6",

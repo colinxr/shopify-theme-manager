@@ -1,0 +1,32 @@
+{
+  "name": "shopify-theme-manager",
+  "version": "1.0.0",
+  "description": "CLI tool to manage Shopify themes",
+  "main": "dist/index.js",
+  "bin": {
+    "stm": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node src/index.ts",
+    "prepare": "npm run build",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^13.1.0",
+    "inquirer": "^8.2.6",
+    "ts-node": "^10.9.2"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^8.2.10",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.13.1",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.7.3"
+  }
+}

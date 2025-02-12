@@ -128,60 +128,60 @@ describe('ConfigManager', () => {
     });
   });
 
-  describe('root directory', () => {
-    it('should set root directory in config', () => {
+  describe('workspace', () => {
+    it('should set workspace in config', () => {
       // Setup
       const config = new ConfigManager();
-      const rootDir = '/path/to/root';
+      const workspace = '/path/to/workspace';
       const writeSpy = jest.spyOn(ConfigManager.prototype as any, 'saveConfig');
 
       // Execute
-      config.setRootDirectory(rootDir);
+      config.setWorkspace(workspace);
 
       // Assert
       expect(writeSpy).toHaveBeenCalledWith(
         expect.objectContaining({
-          rootDirectory: rootDir,
+          workspace: workspace,
           stores: expect.any(Array)
         })
       );
     });
 
-    it('should normalize the root directory path', () => {
+    it('should normalize the directory path', () => {
       // Setup
       const config = new ConfigManager();
       const writeSpy = jest.spyOn(ConfigManager.prototype as any, 'saveConfig');
 
       // Execute
-      config.setRootDirectory('./relative/path');
+      config.setWorkspace('./relative/path');
 
       // Assert
       expect(writeSpy).toHaveBeenCalledWith(
         expect.objectContaining({
-          rootDirectory: expect.stringMatching(/^\/.*\/relative\/path$/),
+          workspace: expect.stringMatching(/^\/.*\/relative\/path$/),
           stores: expect.any(Array)
         })
       );
     });
 
-    it('should get root directory from config', () => {
+    it('should get workspace from config', () => {
       // Setup
-      const rootDir = '/path/to/root';
+      const workspace = '/path/to/workspace';
       (readFileSync as jest.Mock).mockReturnValue(JSON.stringify({
         stores: [],
-        rootDirectory: rootDir
+        workspace: workspace
       }));
       
       const config = new ConfigManager();
 
       // Execute
-      const result = config.getRootDirectory();
+      const result = config.getWorkspace();
 
       // Assert
-      expect(result).toBe(rootDir);
+      expect(result).toBe(workspace);
     });
 
-    it('should return undefined if no root directory is set', () => {
+    it('should return undefined if no workspace is set', () => {
       // Setup
       (readFileSync as jest.Mock).mockReturnValue(JSON.stringify({
         stores: []
@@ -190,7 +190,7 @@ describe('ConfigManager', () => {
       const config = new ConfigManager();
 
       // Execute
-      const result = config.getRootDirectory();
+      const result = config.getWorkspace();
 
       // Assert
       expect(result).toBeUndefined();

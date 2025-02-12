@@ -10,7 +10,7 @@ interface StoreConfig {
 
 interface Config {
   stores: StoreConfig[];
-  rootDirectory?: string;
+  workspace?: string;
 }
 
 export class ConfigManager {
@@ -58,12 +58,12 @@ export class ConfigManager {
     return this.config.stores;
   }
 
-  setRootDirectory(directory: string): void {
-    this.config.rootDirectory = resolve(directory);
+  setWorkspace(directory: string): void {
+    this.config.workspace = resolve(directory);
     this.saveConfig(this.config);
   }
 
-  getRootDirectory(): string | undefined {
-    return this.config.rootDirectory;
+  getWorkspace(): string | undefined {
+    return this.config.workspace;
   }
 } 

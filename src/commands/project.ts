@@ -100,4 +100,13 @@ export function setupProjectCommands(program: Command): void {
         console.error('Error executing Shopify CLI command:', error);
       }
     });
+
+  program
+    .command('set-workspace')
+    .description('Set the workspace directory for all projects')
+    .argument('[directory]', 'Directory path (defaults to current directory)')
+    .action(async (directory = process.cwd()) => {
+      config.setWorkspace(directory);
+      console.log(`Workspace set to: ${config.getWorkspace()}`);
+    });
 } 

@@ -32,6 +32,8 @@ describe('Project Commands', () => {
       addStore: jest.fn(),
       getStore: jest.fn(),
       listStores: jest.fn(),
+      setWorkspace: jest.fn(),
+      getWorkspace: jest.fn()
     } as any;
     
     (ConfigManager as jest.Mock).mockImplementation(() => mockConfigManager);
@@ -219,6 +221,33 @@ describe('Project Commands', () => {
           shell: true
         })
       );
+    });
+  });
+
+  describe('set-workspace command', () => {
+    it('should set workspace with provided path', async () => {
+      // Setup
+      const testDir = '/test/path';
+      mockConfigManager.setWorkspace.mockImplementation(() => {});
+      mockConfigManager.getWorkspace.mockReturnValue(testDir);
+
+      // Execute
+      await program.parseAsync(['node', 'test', 'set-workspace', testDir]);
+
+      // Assert
+      expect(mockConfigManager.setWorkspace).toHaveBeenCalledWith(testDir);
+    });
+
+    it('should default to current directory when no path provided', async () => {
+      // Setup
+      mockConfigManager.setWorkspace.mockImplementation(() => {});
+      mockConfigManager.getWorkspace.mockReturnValue(process.cwd());
+
+      // Execute
+      await program.parseAsync(['node', 'test', 'set-workspace']);
+
+      // Assert
+      expect(mockConfigManager.setWorkspace).toHaveBeenCalledWith(process.cwd());
     });
   });
 }); 

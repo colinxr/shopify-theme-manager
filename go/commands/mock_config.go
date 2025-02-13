@@ -1,6 +1,11 @@
 package commands
 
-import "github.com/colinxr/shopify-theme-manager/config"
+import (
+	"fmt"
+	"strings"
+
+	"github.com/colinxr/shopify-theme-manager/config"
+)
 
 // MockConfig implements config.Manager for testing
 type MockConfig struct {
@@ -33,6 +38,10 @@ func (m *MockConfig) GetStore(alias string) *config.Store {
 }
 
 func (m *MockConfig) SetWorkspace(path string) error {
+	// Check for null bytes in path
+	if strings.Contains(path, "\x00") {
+		return fmt.Errorf("invalid workspace path: contains null byte")
+	}
 	m.workspace = path
 	return nil
 }

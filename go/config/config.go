@@ -7,9 +7,9 @@ import (
 )
 
 type Store struct {
-	StoreID      string `json:"storeId"`
-	Alias        string `json:"alias"`
-	ProjectDir   string `json:"projectDir"`
+	StoreID    string `json:"storeId"`
+	Alias      string `json:"alias"`
+	ProjectDir string `json:"projectDir"`
 }
 
 type Config struct {
@@ -17,13 +17,20 @@ type Config struct {
 	Workspace string  `json:"workspace"`
 }
 
-type Manager struct {
+type Manager interface {
+	AddStore(storeID, alias, projectDir string) error
+	GetStore(alias string) *Store
+	SetWorkspace(path string) error
+	GetWorkspace() string
+}
+
+type ConfigManager struct {
 	configDir  string
 	configPath string
 	config     *Config
 }
 
-func NewManager() (*Manager, error) {
+func NewManager() (Manager, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return nil, err
@@ -32,7 +39,7 @@ func NewManager() (*Manager, error) {
 	configDir := filepath.Join(homeDir, ".config", "shopify-theme-manager")
 	configPath := filepath.Join(configDir, "config.json")
 
-	m := &Manager{
+	m := &ConfigManager{
 		configDir:  configDir,
 		configPath: configPath,
 	}
@@ -48,7 +55,7 @@ func NewManager() (*Manager, error) {
 	return m, nil
 }
 
-func (m *Manager) ensureConfigExists() error {
+func (m *ConfigManager) ensureConfigExists() error {
 	if err := os.MkdirAll(m.configDir, 0755); err != nil {
 		return err
 	}
@@ -57,13 +64,14 @@ func (m *Manager) ensureConfigExists() error {
 		config := Config{
 			Stores: []Store{},
 		}
-		return m.saveConfig(&config)
+		m.config = &config
+		return m.saveConfig()
 	}
 
 	return nil
 }
 
-func (m *Manager) loadConfig() error {
+func (m *ConfigManager) loadConfig() error {
 	data, err := os.ReadFile(m.configPath)
 	if err != nil {
 		return err
@@ -78,7 +86,7 @@ func (m *Manager) loadConfig() error {
 	return nil
 }
 
-func (m *Manager) saveConfig() error {
+func (m *ConfigManager) saveConfig() error {
 	data, err := json.MarshalIndent(m.config, "", "  ")
 	if err != nil {
 		return err
@@ -87,7 +95,7 @@ func (m *Manager) saveConfig() error {
 	return os.WriteFile(m.configPath, data, 0644)
 }
 
-func (m *Manager) AddStore(storeID, alias, projectDir string) error {
+func (m *ConfigManager) AddStore(storeID, alias, projectDir string) error {
 	store := Store{
 		StoreID:    storeID,
 		Alias:      alias,
@@ -97,7 +105,7 @@ func (m *Manager) AddStore(storeID, alias, projectDir string) error {
 	return m.saveConfig()
 }
 
-func (m *Manager) GetStore(alias string) *Store {
+func (m *ConfigManager) GetStore(alias string) *Store {
 	for _, store := range m.config.Stores {
 		if store.Alias == alias {
 			return &store
@@ -106,7 +114,7 @@ func (m *Manager) GetStore(alias string) *Store {
 	return nil
 }
 
-func (m *Manager) SetWorkspace(path string) error {
+func (m *ConfigManager) SetWorkspace(path string) error {
 	absPath, err := filepath.Abs(path)
 	if err != nil {
 		return err
@@ -115,6 +123,6 @@ func (m *Manager) SetWorkspace(path string) error {
 	return m.saveConfig()
 }
 
-func (m *Manager) GetWorkspace() string {
+func (m *ConfigManager) GetWorkspace() string {
 	return m.config.Workspace
 } 

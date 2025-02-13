@@ -2,12 +2,11 @@ package commands
 
 import (
 	"fmt"
-	"os"
 	"github.com/spf13/cobra"
 	"github.com/colinxr/shopify-theme-manager/config"
 )
 
-func NewSetWorkspaceCommand(cfg *config.Manager) *cobra.Command {
+func NewSetWorkspaceCommand(cfg config.Manager) *cobra.Command {
 	return &cobra.Command{
 		Use:   "set-workspace [directory]",
 		Short: "Set the workspace directory for all projects",

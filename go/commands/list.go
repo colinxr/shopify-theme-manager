@@ -2,12 +2,12 @@ package commands
 
 import (
 	"fmt"
-	"os/exec"
-	"github.com/spf13/cobra"
+
 	"github.com/colinxr/shopify-theme-manager/config"
+	"github.com/spf13/cobra"
 )
 
-func NewListCommand(cfg *config.Manager) *cobra.Command {
+func NewListCommand(cfg config.Manager) *cobra.Command {
 	var themeName string
 
 	cmd := &cobra.Command{
@@ -21,11 +21,16 @@ func NewListCommand(cfg *config.Manager) *cobra.Command {
 				return fmt.Errorf("store with alias %q not found", alias)
 			}
 
-			// Build shopify CLI command
-			shopifyCmd := exec.Command("shopify", "theme", "list", "--store", store.StoreID)
+			// Build base shopify CLI command
+			args = []string{"theme", "list", "--store", store.StoreID}
+
+			// Add name filter if provided
 			if themeName != "" {
-				shopifyCmd.Args = append(shopifyCmd.Args, "--name", themeName)
+				args = append(args, "--name", themeName)
 			}
+
+			// Create command with all arguments
+			shopifyCmd := execCommand("shopify", args...)
 
 			// Set output to current process
 			shopifyCmd.Stdout = cmd.OutOrStdout()
@@ -37,4 +42,4 @@ func NewListCommand(cfg *config.Manager) *cobra.Command {
 
 	cmd.Flags().StringVarP(&themeName, "name", "n", "", "Filter themes by name")
 	return cmd
-} 
+}

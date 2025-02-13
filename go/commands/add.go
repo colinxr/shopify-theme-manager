@@ -9,6 +9,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Declare runPrompt at package level for production use
+var runPrompt = func(p promptui.Prompt) (string, error) {
+	return p.Run()
+}
+
 func NewAddCommand(cfg config.Manager) *cobra.Command {
 	return &cobra.Command{
 		Use:   "add",

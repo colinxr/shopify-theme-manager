@@ -1,8 +1,8 @@
 package commands
 
 import (
-	"github.com/spf13/cobra"
 	"github.com/colinxr/shopify-theme-manager/config"
+	"github.com/spf13/cobra"
 )
 
 func NewRootCommand(cfg config.Manager) *cobra.Command {
@@ -18,8 +18,7 @@ func NewRootCommand(cfg config.Manager) *cobra.Command {
 		NewListCommand(cfg),
 		NewDevCommand(cfg),
 		NewSetWorkspaceCommand(cfg),
-		NewCdCommand(cfg),
 	)
 
 	return rootCmd
-} 
+}

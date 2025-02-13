@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/colinxr/shopify-theme-manager/config"
 	"github.com/spf13/cobra"
@@ -32,9 +33,17 @@ func NewListCommand(cfg config.Manager) *cobra.Command {
 			// Create command with all arguments
 			shopifyCmd := execCommand("shopify", args...)
 
-			// Set output to current process
+			// Set up the command to use the current terminal
+			shopifyCmd.Stdin = cmd.InOrStdin()
 			shopifyCmd.Stdout = cmd.OutOrStdout()
 			shopifyCmd.Stderr = cmd.ErrOrStderr()
+
+			// Inherit the parent environment
+			shopifyCmd.Env = append([]string{
+				"TERM=" + os.Getenv("TERM"),
+				"HOME=" + os.Getenv("HOME"),
+				"PATH=" + os.Getenv("PATH"),
+			}, os.Environ()...)
 
 			return shopifyCmd.Run()
 		},

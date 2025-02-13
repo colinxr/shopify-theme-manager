@@ -2,13 +2,12 @@ package commands
 
 import (
 	"bytes"
-	"os"
 	"os/exec"
 	"testing"
 
+	"github.com/colinxr/shopify-theme-manager/config"
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
-	"github.com/colinxr/shopify-theme-manager/config"
 )
 
 // testHelper provides common test utilities
@@ -35,18 +34,9 @@ func (h *testHelper) setupCommand(cmd *cobra.Command) {
 	h.cmd.AddCommand(cmd)
 }
 
-// Mock system calls
-var (
-	osChdir = os.Chdir
-	runPrompt = func(p promptui.Prompt) (string, error) {
-		return "", nil
-	}
-)
-
 // Reset mocks after tests
 func resetMocks() {
 	execCommand = exec.Command
-	osChdir = os.Chdir
 	runPrompt = func(p promptui.Prompt) (string, error) {
 		return "", nil
 	}
@@ -61,15 +51,6 @@ func MockPrompt(mockRun func(promptui.Prompt) (string, error)) func() {
 	}
 }
 
-// MockChdir replaces os.Chdir with a mock
-func MockChdir(mockChdir func(string) error) func() {
-	oldChdir := osChdir
-	osChdir = mockChdir
-	return func() {
-		osChdir = oldChdir
-	}
-}
-
 // MockExecCommand replaces exec.Command with a mock
 func MockExecCommand(mockExec func(string, ...string) *exec.Cmd) func() {
 	oldExec := execCommand
@@ -77,4 +58,4 @@ func MockExecCommand(mockExec func(string, ...string) *exec.Cmd) func() {
 	return func() {
 		execCommand = oldExec
 	}
-} 
+}

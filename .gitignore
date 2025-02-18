@@ -1,20 +1,31 @@
-# Build output
-dist/
+# Binary
+stm
+stm.exe
 
-# Dependencies
-node_modules/
+# Go specific
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
 
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# Coverage files
+coverage.out
+coverage.html
 
-# Environment variables
-.env
-
-# IDE
-.vscode/
+# IDE specific
 .idea/
+.vscode/
+*.swp
+*.swo
 
-# OS
-.DS_Store 
+# OS specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db 

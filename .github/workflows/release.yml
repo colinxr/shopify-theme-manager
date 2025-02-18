@@ -19,20 +19,6 @@ jobs:
         with:
           go-version: "1.21" # Adjust as needed
 
-      - name: Verify Permissions
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_PAT }} # Use the new token
-        run: |
-          echo "GITHUB_TOKEN permissions:"
-          curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
-          https://api.github.com/repos/$GITHUB_REPOSITORY/actions/secrets \
-          | jq '.total_count'
-          echo "\nHOMEBREW_TAP_GITHUB_TOKEN permissions:"
-          curl -s -H "Authorization: Bearer $HOMEBREW_TAP_GITHUB_TOKEN" \
-          https://api.github.com/repos/$GITHUB_REPOSITORY/actions/secrets \
-          | jq '.total_count'
-
       - name: Install GoReleaser
         uses: goreleaser/goreleaser-action@v6
         with:
@@ -41,7 +27,6 @@ jobs:
 
       - name: Run GoReleaser
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_PAT }} # Use the new token
+          GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_PAT }} # Use the new token
         run: |
           goreleaser release --clean

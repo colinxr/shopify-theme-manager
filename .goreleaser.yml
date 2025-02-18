@@ -2,7 +2,7 @@ version: 2
 
 before:
   hooks:
-    - go mod tidy
+    - sh -c "go mod tidy -C src"
 
 builds:
   - dir: src

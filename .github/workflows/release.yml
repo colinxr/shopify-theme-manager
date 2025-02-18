@@ -29,6 +29,6 @@ jobs:
       - name: Run GoReleaser
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed for Homebrew
+          HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_PAT }} # Use the new token
         run: |
           goreleaser release --clean

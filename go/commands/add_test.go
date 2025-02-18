@@ -10,11 +10,11 @@ import (
 
 func TestAddCommand(t *testing.T) {
 	tests := []struct {
-		name           string
+		name            string
 		promptResponses map[string]string
-		wantErr        bool
-		errMsg         string
-		verify         func(t *testing.T, h *testHelper)
+		wantErr         bool
+		errMsg          string
+		verify          func(t *testing.T, h *testHelper)
 	}{
 		{
 			name: "successful add",
@@ -65,7 +65,7 @@ func TestAddCommand(t *testing.T) {
 			},
 			wantErr: false,
 			verify: func(t *testing.T, h *testHelper) {
-				store := h.mock.GetStore("test-store")  // Use store ID as alias
+				store := h.mock.GetStore("test-store") // Use store ID as alias
 				if store == nil {
 					t.Error("store was not added")
 					return

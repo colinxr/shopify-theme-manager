@@ -45,7 +45,7 @@ brews:
     homepage: "https://github.com/colinxr/shopify-theme-manager"
     description: "Shopify Theme Manager CLI"
     install: |
-      bin.install "stm"
+      bin.install "shopify-theme-manager"
     test: |
       system "#{bin}/stm --version"
 

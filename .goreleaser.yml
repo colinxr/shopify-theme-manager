@@ -40,12 +40,13 @@ archives:
 brews:
   - repository:
       owner: colinxr
-      name: homebrew-shopify-theme-manager
-    name: stm
+      name: homebrew-stm
+    name: shopify-theme-manager
     homepage: "https://github.com/colinxr/shopify-theme-manager"
     description: "Shopify Theme Manager CLI"
+    url_template: "https://github.com/colinxr/shopify-theme-manager/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
     install: |
-      bin.install "shopify-theme-manager"
+      bin.install "stm"
     test: |
       system "#{bin}/stm --version"
 

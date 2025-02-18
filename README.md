@@ -25,15 +25,14 @@ brew install shopify-theme-manager
 To update to the latest version:
 
 ```bash
+brew update
 brew upgrade shopify-theme-manager
 ```
 
 You can verify the installed version with:
 
-```bash
-stm -V
-```
-
+````bash
+stm --version
 ## Commands
 
 ### Set Workspace (`stm set-workspace`)
@@ -46,7 +45,7 @@ stm set-workspace /path/to/workspace
 
 # Set to current directory
 stm set-workspace
-```
+````
 
 ### Add Store (`stm add`)
 

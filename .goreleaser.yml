@@ -40,7 +40,7 @@ archives:
 brews:
   - repository:
       owner: colinxr
-      name: homebrew-stm
+      name: homebrew-shopify-theme-manager
     name: shopify-theme-manager
     homepage: "https://github.com/colinxr/shopify-theme-manager"
     description: "Shopify Theme Manager CLI"

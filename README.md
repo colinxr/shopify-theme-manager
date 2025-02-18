@@ -6,20 +6,18 @@ A CLI tool to simplify working with Shopify themes. This tool helps manage multi
 
 Before using this tool, ensure you have:
 
-- Node.js 14 or higher
-- Shopify CLI installed globally:
-
+- Shopify CLI installed:
   ```bash
-  npm install -g @shopify/cli @shopify/theme
-
+  brew install shopify-cli
   ```
 
 ## Installation
 
-Install the package globally:
+Install via Homebrew:
 
 ```bash
-npm install -g shopify-theme-manager
+brew tap colinxr/shopify-theme-manager
+brew install shopify-theme-manager
 ```
 
 ## Updating
@@ -27,12 +25,7 @@ npm install -g shopify-theme-manager
 To update to the latest version:
 
 ```bash
-# Option 1: Update
-npm update -g shopify-theme-manager
-
-# Option 2: Uninstall and reinstall (recommended)
-npm uninstall -g shopify-theme-manager
-npm install -g shopify-theme-manager
+brew upgrade shopify-theme-manager
 ```
 
 You can verify the installed version with:
@@ -140,7 +133,3 @@ Configuration includes:
    ```bash
    stm dev <theme-id>
    ```
-
-```
-
-```

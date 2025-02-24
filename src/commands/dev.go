@@ -27,6 +27,7 @@ func NewDevCommand(cfg config.Manager) *cobra.Command {
 			// Set output to current process
 			shopifyCmd.Stdout = cmd.OutOrStdout()
 			shopifyCmd.Stderr = cmd.ErrOrStderr()
+			shopifyCmd.Stdin = cmd.InOrStdin()
 
 			return shopifyCmd.Run()
 		},

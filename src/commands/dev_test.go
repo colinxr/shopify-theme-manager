@@ -17,10 +17,11 @@ func TestDevCommand(t *testing.T) {
 		errMsg   string
 	}{
 		{
-			name:    "missing theme ID",
-			args:    []string{"dev"},
-			wantErr: true,
-			errMsg:  "accepts 1 arg(s), received 0",
+			name:     "optional theme ID",
+			args:     []string{"dev"},
+			wantCmd:  "shopify",
+			wantArgs: []string{"theme", "dev"},
+			wantErr:  false,
 		},
 		{
 			name:     "valid theme ID",
@@ -33,7 +34,7 @@ func TestDevCommand(t *testing.T) {
 			name:    "too many arguments",
 			args:    []string{"dev", "123456", "extra"},
 			wantErr: true,
-			errMsg:  "accepts 1 arg(s), received 2",
+			errMsg:  "accepts at most 1 arg(s), received 2",
 		},
 		{
 			name:     "theme ID with flags",

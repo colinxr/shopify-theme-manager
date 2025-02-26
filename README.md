@@ -69,18 +69,10 @@ stm list <store-alias> [--name <theme-name>]
 
 ### Development Server (`stm dev`)
 
-Start theme development server for a specific theme.
+Start theme development server for a specific theme. If you don't pass a theme ID, then the it will just start a regular development theme.
 
 ```bash
 stm dev <theme-id>
-```
-
-### Change Directory (`stm cd`)
-
-Change to a store's project directory within the workspace.
-
-```bash
-stm cd store-alias
 ```
 
 ## Configuration

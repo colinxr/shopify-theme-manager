@@ -9,12 +9,18 @@ func NewDevCommand(cfg config.Manager) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "dev <theme-id>",
 		Short: "Start theme development server",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			themeID := args[0]
+			var themeID string
+			if len(args) > 0 {
+				themeID = args[0]
+			}
 
 			// Build base command args
-			cmdArgs := []string{"theme", "dev", "--theme", themeID}
+			cmdArgs := []string{"theme", "dev"}
+			if themeID != "" {
+				cmdArgs = append(cmdArgs, "--theme", themeID)
+			}
 
 			// Add port flag if provided
 			if port, _ := cmd.Flags().GetString("port"); port != "" {
@@ -27,6 +33,7 @@ func NewDevCommand(cfg config.Manager) *cobra.Command {
 			// Set output to current process
 			shopifyCmd.Stdout = cmd.OutOrStdout()
 			shopifyCmd.Stderr = cmd.ErrOrStderr()
+			shopifyCmd.Stdin = cmd.InOrStdin()
 
 			return shopifyCmd.Run()
 		},

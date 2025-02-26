@@ -8,7 +8,7 @@ import (
 func NewRootCommand(cfg config.Manager) *cobra.Command {
 	rootCmd := &cobra.Command{
 		Use:     "stm",
-		Version: "1.0.0",
+		Version: "0.0.9",
 		Short:   "Shopify Theme Manager - A CLI tool to manage Shopify themes",
 	}
 
